@@ -1,34 +1,53 @@
-import {Col, Container, Row} from "reactstrap";
+import {Button, Col, Container, Row} from "reactstrap";
 
 import Header from '../Header/Header';
 import RandomChar from '../RandomChar/RandomChar';
-import ItemList from '../ItemList/ItemList';
-import CharDetails from '../CharDetails/CharDetails';
+import CharacterPage from "../CharacterPage/CharacterPage";
+import {Component} from "react";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
+export default class App extends Component {
+    state = {
+        showRandomChar: true,
+        error: false
+    }
 
-const App = () => {
-  return (
-      <>
-        <Container>
-          <Header />
-        </Container>
-        <Container>
-          <Row>
-            <Col lg={{size: 5, offset: 0}}>
-              <RandomChar/>
-            </Col>
-          </Row>
-          <Row>
-            <Col md='6'>
-              <ItemList />
-            </Col>
-            <Col md='6'>
-              <CharDetails />
-            </Col>
-          </Row>
-        </Container>
-      </>
-  );
+    toggleRandomChar = () => {
+        this.setState((state) => {
+            return {
+                showRandomChar: !state.showRandomChar
+            }
+        });
+    };
+
+    render() {
+        return (
+            <>
+                <Container>
+                    <Header/>
+                </Container>
+                <Container>
+                    <Row>
+                        <Col lg={{size: 6, offset: 0}}>
+                            { this.state.error ? <ErrorMessage/> : this.state.showRandomChar ?
+                                <RandomChar/> : null}
+                        </Col>
+                    </Row>
+
+                    <Row style={{marginBottom: '40px'}}>
+                        <Col lg={{size: 6, offset: 0}}>
+                            <Button
+                                onClick={this.toggleRandomChar}
+                                size='lg'
+                                color='primary'>Toggle Random Char</Button>
+                        </Col>
+                    </Row>
+
+                    <CharacterPage/>
+                    <CharacterPage/>
+                    <CharacterPage/>
+                </Container>
+            </>
+        );
+    }
 }
-
-export default App;

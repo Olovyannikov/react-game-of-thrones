@@ -2,6 +2,7 @@ import styled from "styled-components";
 import {ListGroup, ListGroupItem} from "reactstrap";
 import {Term} from "../RandomChar/RandomChar";
 import {Component} from "react";
+import GotService from "../../services/GotService.service";
 
 const CharDetailsBlock = styled.div`
   background-color: #fff;
@@ -21,32 +22,69 @@ const CharDetailsBlock = styled.div`
 // `;
 
 styled(ListGroupItem)`
-  display: flex!important;
+  display: flex !important;
   justify-content: space-between;
 `;
 
 export default class CharDetails extends Component {
 
+    GotService = new GotService();
+
+    state = {
+        char: null
+    }
+
+    componentDidMount() {
+        this.updateChar();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.charId !== prevProps.charId) {
+            this.updateChar();
+        }
+    }
+
+    updateChar() {
+        const {charId} = this.props;
+        if (!charId) {
+            return;
+        }
+
+        this.GotService.getCharacter(charId)
+            .then((char) => {
+                this.setState({
+                    char
+                })
+            })
+    }
+
     render() {
+
+        if (!this.state.char) {
+            return <span style={{color: '#fff', fontSize: '20px'}}>Please select a char</span>
+        }
+
+        const {name, gender, born, died, culture} = this.state.char;
+
         return (
             <CharDetailsBlock className="rounded">
-                <h4>John Snow</h4>
+                <h4>{name || 'no data :('}</h4>
                 <ListGroup flush>
-                    <ListGroupItem  className='d-flex justify-content-between'>
+                    <ListGroupItem className='d-flex justify-content-between'>
                         <Term>Gender</Term>
-                        <span>male</span>
+                        <span>{gender || 'no data :('}</span>
                     </ListGroupItem>
                     <ListGroupItem className="d-flex justify-content-between">
                         <Term>Born</Term>
-                        <span>1783</span>
+                        <span>{born || 'no data :('}</span>
                     </ListGroupItem>
                     <ListGroupItem className="d-flex justify-content-between">
                         <Term>Died</Term>
-                        <span>1820</span>
+                        <span>{died || 'no data :('}</span>
                     </ListGroupItem>
                     <ListGroupItem className="d-flex justify-content-between">
                         <Term>Culture</Term>
-                        <span>First</span>
+                        <span>{culture || 'no data :('}</span>
                     </ListGroupItem>
                 </ListGroup>
             </CharDetailsBlock>

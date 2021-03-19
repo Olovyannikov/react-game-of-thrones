@@ -24,16 +24,19 @@ export default class GotService {
         return this._transformCharacter(character);
     }
 
-    getAllHouses(id) {
-        return this.getResource(`/houses/${id}`);
+    async getAllHouses(id) {
+        const houses = await this.getResource(`/houses/${id}`);
+        return houses.map(this._transformHouse);
     }
 
-    getAllBooks() {
-        return this.getResource(`/books`);
+    async getAllBooks() {
+        const books = await this.getResource(`/books`);
+        return books.map(this._transformBook);
     }
 
-    getBook(id) {
-        return this.getResource(`/books/${id}`);
+    async getBook(id) {
+        const book = await this.getResource(`/books/${id}`);
+        return this._transformBook(book);
     }
 
     _transformCharacter(char) {
