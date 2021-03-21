@@ -1,57 +1,47 @@
-import styled from "styled-components";
+import React, {Component} from 'react';
+import gotService from '../../services/gotService';
+import Spinner from '../spinner';
+import ErrorMessage from '../errorMessage';
+import {Term} from '../itemDetails'
+import styled from 'styled-components';
 import {ListGroup, ListGroupItem} from "reactstrap";
-import {Component} from "react";
-import GotService from "../../services/GotService.service";
-import Spinner from "../Spinner/Spinner";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
-const CharBlock = styled.div`
+const RandomBlock = styled.div`
   background-color: #fff;
   padding: 25px 25px 15px 25px;
   margin-bottom: 40px;
-  border-radius: 0.25em;
-
   h4 {
-    background-color: #fff;
-    padding: 25px 25px 15px 25px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+    text-align: center;
   }
-`;
-
-const Term = styled.span`
-  font-weight: bold;
 `;
 
 export default class RandomChar extends Component {
 
-    constructor(props) {
-        super(props);
-    }
-
-    GotService = new GotService();
-
+    gotService = new gotService();
     state = {
         char: {},
-        loading: true
+        loading: true,
+        error: false
     }
 
     componentDidMount() {
         this.updateChar();
-        this.timerId = setInterval(this.updateChar, 1500);
+        this.timerId = setInterval(this.updateChar, 15000);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(){
         clearInterval(this.timerId);
     }
 
-    onCharLoaded = (char) => this.setState(
-        {
+    onCharLoaded = (char) => {
+        this.setState({
             char,
-            loading: false,
-            error: false
-        });
+            loading: false
+        })
+    }
 
-    onError = (err) => {
+    onError = () => {
         this.setState({
             error: true,
             loading: false
@@ -59,44 +49,51 @@ export default class RandomChar extends Component {
     }
 
     updateChar = () => {
-        let id = Math.floor(Math.random() * 140 + 25); // 140 - общее количество записей, 25 - с какой записи начиаем
-        this.GotService.getCharacter(id)
+        const id = Math.floor(Math.random()*140 + 25); //25-140
+        this.gotService.getCharacter(id)
             .then(this.onCharLoaded)
             .catch(this.onError);
     }
 
     render() {
-        const {char: {name, gender, born, died, culture}, loading, error} = this.state;
+        const { char, loading, error } = this.state;
+
+        const errorMessage = error ? <ErrorMessage/> : null;
+        const spinner = loading ? <Spinner/> : null;
+        const content = !(loading || error) ? <View char={char}/> : null;
 
         return (
-            <CharBlock>
-                {loading ?
-                    <Spinner/> :
-                    !error ?
-                        <>
-                            <h4>Random Character: {name}</h4>
-                            <ListGroup flush>
-                                <ListGroupItem className='d-flex justify-content-between'>
-                                    <Term>Gender </Term>
-                                    <span>{gender || 'Not Allowed'}</span>
-                                </ListGroupItem>
-                                <ListGroupItem className='d-flex justify-content-between'>
-                                    <Term>Born </Term>
-                                    <span>{born || 'Not Allowed'}</span>
-                                </ListGroupItem>
-                                <ListGroupItem className='d-flex justify-content-between'>
-                                    <Term>Died </Term>
-                                    <span>{died || 'Not Allowed'}</span>
-                                </ListGroupItem>
-                                <ListGroupItem className='d-flex justify-content-between'>
-                                    <Term>Culture </Term>
-                                    <span>{culture || 'Not Allowed'}</span>
-                                </ListGroupItem>
-                            </ListGroup>
-                        </> : <ErrorMessage/>}
-            </CharBlock>
+            <RandomBlock className="rounded">
+                {errorMessage}
+                {spinner}
+                {content}
+            </RandomBlock>
         );
     }
 }
-
-export {Term};
+const View = ({char}) => {
+    const {name, gender, born, died, culture} = char;
+    return (
+        <>
+            <h4>Random Character: {name}</h4>
+            <ListGroup flush>
+                <ListGroupItem className="d-flex justify-content-between">
+                    <Term>Gender</Term>
+                    <span>{gender}</span>
+                </ListGroupItem>
+                <ListGroupItem className="d-flex justify-content-between">
+                    <Term>Born </Term>
+                    <span>{born}</span>
+                </ListGroupItem>
+                <ListGroupItem className=" d-flex justify-content-between">
+                    <Term>Died </Term>
+                    <span>{died}</span>
+                </ListGroupItem>
+                <ListGroupItem className=" d-flex justify-content-between">
+                    <Term>Culture </Term>
+                    <span>{culture}</span>
+                </ListGroupItem>
+            </ListGroup>
+        </>
+    )
+}

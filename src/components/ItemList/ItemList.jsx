@@ -1,54 +1,52 @@
-import {Component} from "react/cjs/react.production.min";
-import styled from "styled-components";
+import React, {Component} from 'react';
+import Spinner from '../spinner';
 import {ListGroup, ListGroupItem} from "reactstrap";
-import GotService from "../../services/GotService.service";
-import Spinner from "../Spinner/Spinner";
-
-styled(ListGroupItem)`
-  cursor: pointer
-`;
 
 export default class ItemList extends Component {
 
-    GotService = new GotService();
-
     state = {
-        charList: null
+        itemList: null
     }
 
     componentDidMount() {
-        this.GotService.getAllCharacters()
-            .then((charList) => {
+        const {getData} = this.props;
+
+        getData()
+            .then( (itemList) => {
                 this.setState({
-                    charList
-                });
-            });
+                    itemList
+                })
+            })
     }
 
     renderItems(arr) {
-        return arr.map((item, i) => {
+        return arr.map((item) => {
+            const {id} = item;
+
+            const label = this.props.renderItem(item);
+
             return (
                 <ListGroupItem
-                    key={i}
-                    onClick={() => this.props.onCharSelected(41 + i)}
-                >
-                    {item.name}
+                    key={id}
+                    onClick={ () => this.props.onItemSelected(id)}>
+                    {label}
                 </ListGroupItem>
             )
         })
     }
 
     render() {
+        const {itemList} = this.state;
 
-        const {charList} = this.state;
-
-        if(!charList) {
+        if (!itemList) {
             return <Spinner/>
         }
 
-        const items = this.renderItems(charList);
+        const items = this.renderItems(itemList);
+
+
         return (
-            <ListGroup>
+            <ListGroup className="item-list">
                 {items}
             </ListGroup>
         );

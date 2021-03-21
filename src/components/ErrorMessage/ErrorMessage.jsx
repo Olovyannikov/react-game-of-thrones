@@ -1,10 +1,16 @@
-import './ErrorMessage.css';
-import img from './error.png';
+import React from 'react';
+import img from './error.jpg';
+
+import styled from "styled-components";
+
+const RandomImageError = styled.img`
+  width: 100%;
+`
 
 const ErrorMessage = () => {
     return (
         <>
-            <img width={420} src={img} alt="error"/>
+            <RandomImageError src={img} alt='error'/>
             <span>Something goes wrong</span>
         </>
     )

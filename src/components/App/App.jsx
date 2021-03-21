@@ -1,15 +1,45 @@
-import {Button, Col, Container, Row} from "reactstrap";
+import React, {Component} from 'react';
+import {Col, Row, Container, Button} from 'reactstrap';
+import Header from '../header';
+import RandomChar from '../randomChar';
+import ErrorMessage from '../errorMessage';
+import {CharacterPage, BooksPage, HousesPage, BooksItem} from '../pages';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import img from '../../assets/img/got.jpeg';
 
-import Header from '../Header/Header';
-import RandomChar from '../RandomChar/RandomChar';
-import CharacterPage from "../CharacterPage/CharacterPage";
-import {Component} from "react";
-import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import styled from "styled-components";
+
+const AppContainer = styled.section`
+  background: blue url(${img}) center center no-repeat;
+  background-size: cover;
+  height: 1000px;
+`;
+
+const buttonStyle = {
+    padding: '12px',
+    backgroundColor: '#1e2edb',
+    border: 'none',
+    borderRadius: '4px',
+    color: '#fff',
+    marginBottom: '40px',
+    outline: 'none',
+    boxShadow: '0 0 30px rgba(256,256,256,.1)',
+    cursor: 'pointer'
+}
 
 export default class App extends Component {
+
     state = {
         showRandomChar: true,
-        error: false
+        error: false,
+        selectedHouse: 20
+    };
+
+    componentDidCatch() {
+        console.log('error');
+        this.setState({
+            error: true
+        })
     }
 
     toggleRandomChar = () => {
@@ -20,34 +50,43 @@ export default class App extends Component {
         });
     };
 
+
     render() {
+        const char = this.state.showRandomChar ? <RandomChar/> : null;
+
+        if (this.state.error) {
+            return <ErrorMessage/>
+        }
+
         return (
-            <>
-                <Container>
-                    <Header/>
-                </Container>
-                <Container>
-                    <Row>
-                        <Col lg={{size: 6, offset: 0}}>
-                            { this.state.error ? <ErrorMessage/> : this.state.showRandomChar ?
-                                <RandomChar/> : null}
-                        </Col>
-                    </Row>
-
-                    <Row style={{marginBottom: '40px'}}>
-                        <Col lg={{size: 6, offset: 0}}>
-                            <Button
-                                onClick={this.toggleRandomChar}
-                                size='lg'
-                                color='primary'>Toggle Random Char</Button>
-                        </Col>
-                    </Row>
-
-                    <CharacterPage/>
-                    <CharacterPage/>
-                    <CharacterPage/>
-                </Container>
-            </>
-        );
+            <Router>
+                <AppContainer>
+                    <Container>
+                        <Header/>
+                    </Container>
+                    <Container>
+                        <Row>
+                            <Col lg={{size: 5, offset: 0}}>
+                                {char}
+                                <Button
+                                    color='primary'
+                                    style={buttonStyle}
+                                    onClick={this.toggleRandomChar}>Toggle random character
+                                </Button>
+                            </Col>
+                        </Row>
+                        <Route path='/' component={() => <h1>Welcome to GOT DB</h1>} exact/>
+                        <Route path='/characters' component={CharacterPage}/>
+                        <Route path='/books' component={BooksPage} exact/>
+                        <Route path='/books/:id' render={({match}) => {
+                            const {id} = match.params;
+                            return <BooksItem bookId={id}/>
+                        }}/>
+                        <Route path='/houses' component={HousesPage}/>
+                    </Container>
+                </AppContainer>
+            </Router>
+        )
     }
-}
+
+};
