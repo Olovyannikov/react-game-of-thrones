@@ -1,19 +1,14 @@
 import React, {Component} from 'react';
 import {Col, Row, Container, Button} from 'reactstrap';
-import Header from '../header';
-import RandomChar from '../randomChar';
-import ErrorMessage from '../errorMessage';
+import Header from '../Header';
+import RandomChar from '../RandomChar';
+import ErrorMessage from '../ErrorMessage';
 import {CharacterPage, BooksPage, HousesPage, BooksItem} from '../pages';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import img from '../../assets/img/got.jpeg';
 
 import styled from "styled-components";
 
-const AppContainer = styled.section`
-  background: blue url(${img}) center center no-repeat;
-  background-size: cover;
-  height: 1000px;
-`;
+const AppContainer = styled.section``;
 
 const buttonStyle = {
     padding: '12px',
@@ -32,7 +27,6 @@ export default class App extends Component {
     state = {
         showRandomChar: true,
         error: false,
-        selectedHouse: 20
     };
 
     componentDidCatch() {
@@ -50,9 +44,8 @@ export default class App extends Component {
         });
     };
 
-
     render() {
-        const char = this.state.showRandomChar ? <RandomChar/> : null;
+        const char = this.state.showRandomChar ? <RandomChar interval={15000}/> : null;
 
         if (this.state.error) {
             return <ErrorMessage/>
@@ -77,16 +70,15 @@ export default class App extends Component {
                         </Row>
                         <Route path='/' component={() => <h1>Welcome to GOT DB</h1>} exact/>
                         <Route path='/characters' component={CharacterPage}/>
+                        <Route path='/houses' component={HousesPage}/>
                         <Route path='/books' component={BooksPage} exact/>
                         <Route path='/books/:id' render={({match}) => {
                             const {id} = match.params;
                             return <BooksItem bookId={id}/>
                         }}/>
-                        <Route path='/houses' component={HousesPage}/>
                     </Container>
                 </AppContainer>
             </Router>
         )
     }
-
 };

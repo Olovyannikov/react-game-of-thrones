@@ -1,3 +1,3 @@
-import RandomChar from './randomChar';
+import RandomChar from './RandomChar';
 
 export default RandomChar;

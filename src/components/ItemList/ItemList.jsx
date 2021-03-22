@@ -1,11 +1,22 @@
 import React, {Component} from 'react';
-import Spinner from '../spinner';
+import Spinner from '../Spinner';
 import {ListGroup, ListGroupItem} from "reactstrap";
+import PropTypes from "prop-types";
 
 export default class ItemList extends Component {
 
     state = {
         itemList: null
+    }
+
+
+    static defaultProps = {
+        onItemSelected: () => {},
+        getData: () => {}
+    }
+
+    static propTypes = {
+        onItemSelected: PropTypes.func
     }
 
     componentDidMount() {

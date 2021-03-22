@@ -1,7 +1,7 @@
-import CharacterPage from './characterPage';
-import BooksPage from './booksPage';
-import HousesPage from './housesPage';
-import BooksItem from './booksItem';
+import CharacterPage from './CharacterPage';
+import BooksPage from './BooksPage';
+import HousesPage from './HousesPage';
+import BooksItem from './BooksItem';
 export {
     CharacterPage,
     BooksPage,

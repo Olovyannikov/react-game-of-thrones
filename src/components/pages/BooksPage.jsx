@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import ItemList from '../itemList';
-import ErrorMessage from '../errorMessage';
+import ItemList from '../ItemList';
+import ErrorMessage from '../ErrorMessage';
 import gotService from '../../services/gotService';
 import {withRouter} from 'react-router-dom';
 
@@ -10,12 +10,6 @@ export class BooksPage extends Component {
     state = {
         selectedBook: null,
         error: false
-    }
-
-    onItemSelected = (id) => {
-        this.setState({
-            selectedBook: id
-        })
     }
 
     componentDidCatch() {

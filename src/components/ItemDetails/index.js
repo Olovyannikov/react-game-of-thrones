@@ -1,3 +1,3 @@
-import CharDetails, {Field, Term} from './itemDetails';
+import CharDetails, {Field, Term} from './ItemDetails';
 export {Field, Term};
 export default CharDetails;

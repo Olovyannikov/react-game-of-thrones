@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import gotService from '../../services/gotService';
-import Spinner from '../spinner';
-import ErrorMessage from '../errorMessage';
-import {Term} from '../itemDetails'
+import Spinner from '../Spinner';
+import ErrorMessage from '../ErrorMessage';
+import {Term} from '../ItemDetails'
 import styled from 'styled-components';
 import {ListGroup, ListGroupItem} from "reactstrap";
+import PropTypes from 'prop-types';
 
 const RandomBlock = styled.div`
   background-color: #fff;
@@ -25,9 +26,13 @@ export default class RandomChar extends Component {
         error: false
     }
 
+    static defaultProps = {
+        interval: 15000,
+    }
+
     componentDidMount() {
         this.updateChar();
-        this.timerId = setInterval(this.updateChar, 15000);
+        this.timerId = setInterval(this.updateChar, this.props.interval);
     }
 
     componentWillUnmount(){
@@ -71,6 +76,11 @@ export default class RandomChar extends Component {
         );
     }
 }
+
+RandomChar.propTypes = {
+    interval: PropTypes.number
+}
+
 const View = ({char}) => {
     const {name, gender, born, died, culture} = char;
     return (
